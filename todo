@@ -1,0 +1,6 @@
+To do:
+- process data: add city/location shortname & longname to each csv
+- add all data to one large csv file
+- create visualization for the data:
+  - input from menu/filters
+  - interactive
