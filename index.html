@@ -1,1 +1,27 @@
-<!-- temp comment -->
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Project</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="main">
+        <svg width="800" height="600" style="border: 1px solid #777;"></svg>
+        <div>
+            <label for="categorySelect">Show: </label>
+            <select class="custom-select" id="categorySelect" onchange="onCityChanged()">
+              <option selected value="Charlotte">Charlotte, NC</option>
+              <option value="Los Angeles">Los Angeles, CA</option>
+              <option value="Indianapolis">Indianapolis, IN</option>
+              <option value="Jacksonville">Jacksonville, FL</option>
+              <option value="Chicago">Chicago, IL</option>
+              <option value="Philadelphia">Philadelphia, PA</option>
+              <option value="Phoenix">Phoenix, AZ</option>
+            </select>
+        </div>
+    </div>
+</body>
+<script src="//d3js.org/d3.v5.min.js"></script>
+<script src="./main.js"></script>
+</html>
