@@ -23,19 +23,40 @@ filter: location
 should be able to compare two years side by side on the bar chart
 */
 
+// initialize global variables
+let weather;
+let freqScale;
+let yScale;
+let csv_file;
+//let minFreq;
+//let maxFreq;
+
 // Global function called when selected location is changed
 function onCityChanged() {
     let catSelect = d3.select('#categorySelect').node();
 
     // Get current value of select element
     let city = catSelect.options[catSelect.selectedIndex].value;
-    
+
     console.log(city)
 
-    let minFreq = +selectedRange[0];
-    let maxFreq = +selectedRange[1];
+    if (city = 'Los Angeles') {
+        csv_file = './data/CQT.csv';
+    } else if (city = 'Indianapolis') {
+        csv_file = './data/IND.csv';
+    } else if (city = 'Jacksonville') {
+        csv_file = './data/JAX.csv';
+    } else if (city = 'Chicago') {
+        csv_file = './data/MDW.csv';
+    } else if (city = 'Philadelphia') {
+        csv_file = './data/PHL.csv';
+    } else if (city = 'Phoenix') {
+        csv_file = './data/PHX.csv';
+    } else {
+        csv_file = './data/CLT.csv';
+    }
 
-    updateChart(city, minFreq, maxFreq);
+    //updateChart(city);
 }
 
 let svg = d3.select('svg');
@@ -64,13 +85,6 @@ let barWidth = barBand * 0.7;
 let chartG = svg.append('g')
     .attr('transform', 'translate('+[padding.l, padding.t]+')');
 
-// initialize global variables
-let weather;
-let freqScale;
-let yScale;
-//let minFreq;
-//let maxFreq;
-
 // add a chart title
 svg.append('g')
    .attr('class', 'title')
@@ -79,11 +93,14 @@ svg.append('g')
    .text('Weather')
    .style('font-size', '14px');
 
-d3.csv('DataProcessing/final.csv').then(function(dataset) {
+d3.csv(csv_file).then(function(dataset) {
     // Create global variables here and intialize the chart
 
     // initialize letters
     weather = dataset;
+
+    console.log('test');
+    console.log(weather);
 
     // find min and max values for actual_mean_temp (CHANGE THIS LATER TO BE FLEXIBLE ON FILTER)
     maxTemp = 0;
