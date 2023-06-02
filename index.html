@@ -9,8 +9,8 @@
     <div id="main">
         <svg width="800" height="600" style="border: 1px solid #777;"></svg>
         <div>
-            <label for="categorySelect">Show: </label>
-            <select class="custom-select" id="categorySelect" onchange="onCityChanged()">
+            <label for="yearSelect">Selected Year: </label>
+            <select class="custom-select" id="yearSelect" onchange="onCityChanged()">
               <option selected value="Charlotte">Charlotte, NC</option>
               <option value="Los Angeles">Los Angeles, CA</option>
               <option value="Indianapolis">Indianapolis, IN</option>
@@ -18,6 +18,30 @@
               <option value="Chicago">Chicago, IL</option>
               <option value="Philadelphia">Philadelphia, PA</option>
               <option value="Phoenix">Phoenix, AZ</option>
+            </select>
+        </div>
+        <div>
+            <label for="col1Select">Selected Temp Value 1: </label>
+            <select class="custom-select" id="col1Select" onchange="onCol1Changed()">
+              <option selected value="actual_mean_temp">Actual Mean Temp</option>
+              <option value="actual_min_temp">Actual Min Temp</option>
+              <option value="actual_max_temp">Actual Max Temp</option>
+              <option value="average_min_temp">Average Min Temp</option>
+              <option value="average_max_temp">Average Max Temp</option>
+              <option value="record_min_temp">Record Min Temp</option>
+              <option value="record_max_temp">Record Max Temp</option>
+            </select>
+        </div>
+        <div>
+            <label for="col1Select">Selected Temp Value 2: </label>
+            <select class="custom-select" id="col2Select" onchange="onCol2Changed()">
+              <option selected value="actual_min_temp">Actual Min Temp</option>
+              <option value="actual_mean_temp">Actual Mean Temp</option>
+              <option value="actual_max_temp">Actual Max Temp</option>
+              <option value="average_min_temp">Average Min Temp</option>
+              <option value="average_max_temp">Average Max Temp</option>
+              <option value="record_min_temp">Record Min Temp</option>
+              <option value="record_max_temp">Record Max Temp</option>
             </select>
         </div>
     </div>

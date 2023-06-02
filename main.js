@@ -19,7 +19,7 @@ record_precipitation : The highest amount of rain or snow on that day since 1880
 vis: double sided clustered bar chart
 x-axis: the date
 y-axis: temp (specific value can be selected by user) + can have multiple values (i.e. separate lines/points)
-filter: location
+filter: location, what columns to show
 should be able to compare two years side by side on the bar chart
 */
 
@@ -27,36 +27,38 @@ should be able to compare two years side by side on the bar chart
 let weather;
 let freqScale;
 let yScale;
-let csv_file;
+let city = 'Charlotte';
+let tempCol1 = 'actual_mean_temp';
+let tempCol2 = 'actual_min_temp';
 //let minFreq;
 //let maxFreq;
 
 // Global function called when selected location is changed
 function onCityChanged() {
-    let catSelect = d3.select('#categorySelect').node();
+    let catSelect = d3.select('#yearSelect').node();
 
     // Get current value of select element
-    let city = catSelect.options[catSelect.selectedIndex].value;
+    city = catSelect.options[catSelect.selectedIndex].value;
 
-    console.log(city)
+    updateChart(city, tempCol1, tempCol2);
+}
 
-    if (city = 'Los Angeles') {
-        csv_file = './data/CQT.csv';
-    } else if (city = 'Indianapolis') {
-        csv_file = './data/IND.csv';
-    } else if (city = 'Jacksonville') {
-        csv_file = './data/JAX.csv';
-    } else if (city = 'Chicago') {
-        csv_file = './data/MDW.csv';
-    } else if (city = 'Philadelphia') {
-        csv_file = './data/PHL.csv';
-    } else if (city = 'Phoenix') {
-        csv_file = './data/PHX.csv';
-    } else {
-        csv_file = './data/CLT.csv';
-    }
+function onCol1Changed() {
+    let catSelect = d3.select('#col1Select').node();
 
-    //updateChart(city);
+    // Get current value of select element
+    tempCol1 = catSelect.options[catSelect.selectedIndex].value;
+
+    updateChart(city, tempCol1, tempCol2);
+}
+
+function onCol2Changed() {
+    let catSelect = d3.select('#col2Select').node();
+
+    // Get current value of select element
+    tempCol2 = catSelect.options[catSelect.selectedIndex].value;
+
+    updateChart(city, tempCol1, tempCol2);
 }
 
 let svg = d3.select('svg');
@@ -93,14 +95,11 @@ svg.append('g')
    .text('Weather')
    .style('font-size', '14px');
 
-d3.csv(csv_file).then(function(dataset) {
+d3.csv('./DataProcessing/final.csv').then(function(dataset) {
     // Create global variables here and intialize the chart
 
     // initialize letters
     weather = dataset;
-
-    console.log('test');
-    console.log(weather);
 
     // find min and max values for actual_mean_temp (CHANGE THIS LATER TO BE FLEXIBLE ON FILTER)
     maxTemp = 0;
@@ -124,16 +123,15 @@ d3.csv(csv_file).then(function(dataset) {
 
     // call updateChart function
     //updateChart('all-letters', minFreq * 100, maxFreq * 100);
-    updateChart(weather);
+    updateChart(city, tempCol1, tempCol2);
 });
 
-function updateChart(data/*filterKey, minFreq, maxFreq*/) {
-    /*
+function updateChart(selected_city, tempColumn1, tempColumn2) {
     // Create a filtered array of letters based on the filterKey
-    let filteredLetters = letters.filter(function(d){
-        return lettersMap[filterKey].indexOf(d.letter) >= 0;
-    });
+    let filteredData = weather.filter(item => item.city === selected_city);
 
+    console.log(filteredData);
+    /*
     // filter data based on slider input
     let filteredData = filteredLetters.filter(function(d) {
         if (maxFreq == 12.7) {
@@ -145,7 +143,7 @@ function updateChart(data/*filterKey, minFreq, maxFreq*/) {
 
     // create bars for each data point (for now)
     let bars = chartG.selectAll('rect')
-                     .data(data, function(d){
+                     .data(filteredData, function(d){
                         return d.actual_mean_temp;
                     })
     
@@ -177,7 +175,7 @@ function updateChart(data/*filterKey, minFreq, maxFreq*/) {
 
     // create label for each letter
     let labels = chartG.selectAll('text')
-                       .data(data, function(d) {return d.letter})
+                       .data(filteredData, function(d) {return d.letter})
     
     
     /*
