@@ -21,6 +21,8 @@ x-axis: the date
 y-axis: temp (specific value can be selected by user) + can have multiple values (i.e. separate lines/points)
 filter: location, what columns to show
 should be able to compare two years side by side on the bar chart
+
+COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
 */
 
 // initialize global variables
@@ -30,17 +32,20 @@ let yScale;
 let city = 'Charlotte';
 let tempCol1 = 'actual_mean_temp';
 let tempCol2 = 'actual_min_temp';
+let precCol1 = 'actual_precipitation';
+let precCol2 = 'average_precipitation';
+let year = "2014";
 //let minFreq;
 //let maxFreq;
 
 // Global function called when selected location is changed
 function onCityChanged() {
-    let catSelect = d3.select('#yearSelect').node();
+    let catSelect = d3.select('#citySelect').node();
 
     // Get current value of select element
     city = catSelect.options[catSelect.selectedIndex].value;
 
-    updateChart(city, tempCol1, tempCol2);
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
 function onCol1Changed() {
@@ -49,7 +54,7 @@ function onCol1Changed() {
     // Get current value of select element
     tempCol1 = catSelect.options[catSelect.selectedIndex].value;
 
-    updateChart(city, tempCol1, tempCol2);
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
 function onCol2Changed() {
@@ -58,7 +63,35 @@ function onCol2Changed() {
     // Get current value of select element
     tempCol2 = catSelect.options[catSelect.selectedIndex].value;
 
-    updateChart(city, tempCol1, tempCol2);
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
+}
+
+function onPrec1Changed() {
+    let catSelect = d3.select('#prec1Select').node();
+
+    // Get current value of select element
+    precCol1 = catSelect.options[catSelect.selectedIndex].value;
+
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
+}
+
+function onPrec2Changed() {
+    let catSelect = d3.select('#prec2Select').node();
+
+    // Get current value of select element
+    precCol2 = catSelect.options[catSelect.selectedIndex].value;
+
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
+}
+
+function onYearChanged() {
+    let catSelect = d3.select('#yearSelect').node();
+
+    // Get current value of select element
+    year = catSelect.options[catSelect.selectedIndex].value;
+    console.log(year);
+
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
 let svg = d3.select('svg');
@@ -117,29 +150,21 @@ d3.csv('./DataProcessing/final.csv').then(function(dataset) {
 
     // set up y scale for bars
     //yScale = d3.scaleLinear().domain([0, weather.length]).range([0, chartHeight]);
-    yScale = d3.scaleBand()
+    yScale = d3.scaleLinear()
         .domain([0, maxTemp])
         .range([0, chartHeight]);
 
     // call updateChart function
     //updateChart('all-letters', minFreq * 100, maxFreq * 100);
-    updateChart(city, tempCol1, tempCol2);
+    updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 });
 
-function updateChart(selected_city, tempColumn1, tempColumn2) {
+function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precColumn2, selected_year) {
     // Create a filtered array of letters based on the filterKey
     let filteredData = weather.filter(item => item.city === selected_city);
+    filteredData = filteredData.filter(item => item.year === selected_year);
 
     console.log(filteredData);
-    /*
-    // filter data based on slider input
-    let filteredData = filteredLetters.filter(function(d) {
-        if (maxFreq == 12.7) {
-            maxFreq = 12.8
-        }
-        return d.frequency * 100 >= minFreq && d.frequency * 100 <= maxFreq;
-      });
-    */
 
     // create bars for each data point (for now)
     let bars = chartG.selectAll('rect')
@@ -162,20 +187,22 @@ function updateChart(selected_city, tempColumn1, tempColumn2) {
     */
 
     bars.enter()
-    .append('rect')
-    .attr('class', 'bar')
-    .merge(bars)
-    .attr('x', 0)
-    .attr('y', d => yScale(d.actual_mean_temp)) // error here
-    .attr('width', barWidth)
-    .attr('height', d => chartHeight - yScale(d.actual_mean_temp)) // and here
-    .attr('fill', 'black');
+        .append('rect')
+        .attr('class', 'bar')
+        .merge(bars)
+        .attr('x', 0)
+        .attr('y', d => yScale(d.actual_mean_temp))
+        .attr('width', barWidth)
+        .attr('height', d => chartHeight - yScale(d.actual_mean_temp))
+        .attr('fill', 'black');
 
     bars.exit().remove(); // remove unnecessary bars
 
     // create label for each letter
     let labels = chartG.selectAll('text')
-                       .data(filteredData, function(d) {return d.letter})
+                       .data(filteredData, function(d) {
+                        return d.month_name;
+                    })
     
     
     /*
@@ -188,16 +215,16 @@ function updateChart(selected_city, tempColumn1, tempColumn2) {
           .attr("y", function(d, i) { return yScale(i) + barHeight / 2 + 5; })
     */
     labels.enter()
-    .append('text')
-    .attr('class', 'label')
-    .merge(labels)
-    .text(d => d.letter)
-    .attr('x', function(d, i) {
-    return barWidth / 2;
-    })
-    .attr('y', d => yScale(d.actual_mean_temp))
-    .attr('text-anchor', 'middle')
-    .attr('dominant-baseline', 'middle');
+        .append('text')
+        .attr('class', 'label')
+        .merge(labels)
+        .text(d => d.letter)
+        .attr('x', function(d, i) {
+        return barWidth / 2;
+        })
+        .attr('y', d => yScale(d.actual_mean_temp))
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle');
     
     labels.exit().remove();
 };
