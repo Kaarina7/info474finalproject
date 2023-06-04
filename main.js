@@ -8,12 +8,12 @@ should be able to compare two years side by side on the bar chart
 COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
 
 THINGS TO DO:
-- add title(s)
-- change bar colors to be more appealing
-- standardize font & size
 - add data labels to each bar
-- move down the top chart & up the bottom chart so that the title isn't blocked & the whole bottom y-scale shows
+- fix y-axis scales
+- add title(s)
+- standardize font & size
 - add labels to y-axes
+- add key to top of chart
 */
 
 // initialize global variables
@@ -158,9 +158,9 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     // add a chart title
     svg.append('g')
         .attr('class', 'title')
-        .attr('transform', 'translate('+[chartWidth / 3 + 20, 30]+')')
+        .attr('transform', 'translate('+[30, 20]+')')
         .append('text')
-        .text('Weather')
+        .text('Weather for ' + selected_city + ', ' + selected_year)
         .style('font-size', '16px');
 
     // Create top y-axis
@@ -168,7 +168,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
 
     let yAxisTopG = chartG.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(30, -55)")
+        .attr("transform", "translate(30, -30)")
         .call(yAxisTop);
 
     yAxisTopG.select(".domain").remove(); // Remove the y-axis line if not needed
@@ -194,7 +194,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
 
     let yAxisBottomG = chartG.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(30, 300)")
+        .attr("transform", "translate(30, 325)")
         .call(yAxisBottom);
 
     yAxisBottomG.select(".domain").remove(); // Remove the y-axis line if not needed
@@ -219,38 +219,70 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         // append one rectangle for tempColumn1
         chartG.append('rect')
             .attr('x', 50 + (rectWidth + 50)*i)
-            .attr('y', 200 - (filteredData[i][tempColumn1] * 2))
+            .attr('y', 275 - (filteredData[i][tempColumn1] * 2))
             .attr('width', 50)
             .attr('height', filteredData[i][tempColumn1] * 2)
             .attr('fill', '#ffb703');
+        // add data label for tempColumn1 rectangle
+        chartG.append('text')
+            .text(Math.round(filteredData[i][tempColumn1] * 100) / 100)
+            .attr('x', 50 + (rectWidth + 50)*i + 25)
+            .attr('y', 275 - (filteredData[i][tempColumn1] * 2) - 5)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '12px')
+            .attr('fill', 'black');
         // append another rectangle for tempColumn2
         chartG.append('rect')
             .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 200 - (filteredData[i][tempColumn2] * 2))
+            .attr('y', 275 - (filteredData[i][tempColumn2] * 2))
             .attr('width', 50)
             .attr('height', filteredData[i][tempColumn2] * 2)
             .attr('fill', '#fb8500');
+        // add data label for tempColumn2 rectangle
+        chartG.append('text')
+            .text(Math.round(filteredData[i][tempColumn2] * 100) / 100)
+            .attr('x', 100 + (rectWidth + 50)*i + 25)
+            .attr('y', 275 - (filteredData[i][tempColumn2] * 2) - 5)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '12px')
+            .attr('fill', 'black');
         // append a rectangle for precColumn1
         chartG.append('rect')
             .attr('x', 50 + (rectWidth + 50)*i)
-            .attr('y', 300)
+            .attr('y', 325)
             .attr('width', 50)
             .attr('height', filteredData[i][precColumn1] * 50)
             .attr('fill', '#8ecae6');
+        // add data label for precColumn1 rectangle
+        chartG.append('text')
+            .text(Math.round(filteredData[i][precColumn1] * 100) / 100)
+            .attr('x', 50 + (rectWidth + 50)*i + 25)
+            .attr('y', 325 + filteredData[i][precColumn1] * 50 + 10)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '12px')
+            .attr('fill', 'black');
         // append another rectangle for tempColumn2
         chartG.append('rect')
             .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 300)
+            .attr('y', 325)
             .attr('width', 50)
             .attr('height', filteredData[i][precColumn2] * 50)
             .attr('fill', '#219ebc');
-        // add text
+        // add data label for precColumn2 rectangle
         chartG.append('text')
-        .text(filteredData[i].month_name)
-        .attr('x', 75 + (rectWidth + 50) * i + 25)
-        .attr('y', 250)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', '16px')
-        .attr('fill', 'black');
+            .text(Math.round(filteredData[i][precColumn2] * 100) / 100)
+            .attr('x', 100 + (rectWidth + 50)*i + 25)
+            .attr('y', 325 + filteredData[i][precColumn2] * 50 + 10)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '12px')
+            .attr('fill', 'black');
+        // add month labels
+        chartG.append('text')
+            .text(filteredData[i].month_name)
+            .attr('x', 75 + (rectWidth + 50) * i + 25)
+            .attr('y', 300)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px')
+            .attr('fill', 'black');
     }
 };
