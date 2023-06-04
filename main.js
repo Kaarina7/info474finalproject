@@ -1,24 +1,14 @@
 /*
-vis: double sided clustered bar chart
-x-axis: the date
-y-axis: temp (specific value can be selected by user) + can have multiple values (i.e. separate lines/points)
-filter: location, what columns to show
-should be able to compare two years side by side on the bar chart
-
 COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
 
 THINGS TO DO:
-- add data labels to each bar
-- fix y-axis scales
-- add title(s)
 - standardize font & size
 - add labels to y-axes
-- add key to top of chart
+- add comments to code & clean up
 */
 
 // initialize global variables
 let weather;
-let freqScale;
 let yScaleTop;
 let yScaleBottom;
 let city = 'Charlotte';
@@ -27,9 +17,6 @@ let tempCol2 = 'actual_min_temp';
 let precCol1 = 'actual_precipitation';
 let precCol2 = 'average_precipitation';
 let year = "2014";
-let maxTemp;
-let minTemp;
-let maxPrec;
 
 // Global function called when selected location is changed
 function onCityChanged() {
@@ -103,38 +90,15 @@ d3.csv('./DataProcessing/final.csv').then(function(dataset) {
     // initialize weather
     weather = dataset;
 
-    // find min and max values for record min/max temps
-    maxTemp = 0;
-    minTemp = 2000;
-    for (i = 0; i < weather.length; i++) {
-        if (weather[i].record_max_temp > maxTemp) {
-            maxTemp = weather[i].record_max_temp;
-        } else if (weather[i].record_min_temp < minTemp) {
-            minTemp = weather[i].record_min_temp;
-        }
-    }
-    console.log('test');
-
-    // find min and max values for record min/max prec
-    maxPrec = 0;
-    for (i = 0; i < weather.length; i++) {
-        if (weather[i].record_precipitation > maxPrec) {
-            maxPrec = weather[i].record_precipitation;
-        }
-    }
-
-    // set up frequency scale
-    freqScale = d3.scaleLinear().domain(weather.map(d => d.date)).range([0, chartWidth]);
-
     // set up y scale for top bars
     yScaleTop = d3.scaleLinear()
-        .domain([maxTemp, 0])
-        .range([0, chartHeight / 2, ]);
+        .domain([110, 0])
+        .range([0, 220]);
 
     // set up y scale for bottom bars
     yScaleBottom = d3.scaleLinear()
-        .domain([0, maxPrec])
-        .range([0, chartHeight / 2, ]);
+        .domain([0, 5])
+        .range([0, 250]);
 
     // call updateChart function
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
@@ -155,27 +119,110 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     let text = svg.selectAll('text');
     text.remove();
 
+    // map states to cities
+    let state = "NC";
+    if (selected_city === "Los Angeles") {
+        state = "CA";
+    } else if (selected_city === "Indianapolis") {
+        state = "IN";
+    } else if (selected_city === "Jacksonville") {
+        state = "FL";
+    } else if (selected_city === "Chicago") {
+        state = "IL";
+    } else if (selected_city === "Philadelphia") {
+        state = "PA";
+    } else if (selected_city === "Charlotte") {
+        state = "NC";
+    } else {
+        state = "AZ";
+    }
+
     // add a chart title
     svg.append('g')
         .attr('class', 'title')
-        .attr('transform', 'translate('+[30, 20]+')')
+        .attr('transform', 'translate('+[270, 30]+')')
         .append('text')
-        .text('Weather for ' + selected_city + ', ' + selected_year)
-        .style('font-size', '16px');
+        .text('Weather for ' + selected_city + ', ' + state + ' (' + selected_year + ')')
+        .style('font-size', '20px');
+
+    // add key/legend
+    // first rectangle: tempColumn1
+    chartG.append('rect')
+        .attr('x', 10)
+        .attr('y', -10)
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('fill', '#ffb703');
+    
+    chartG.append('text')
+        .text(tempColumn1)
+        .attr('x', 40)
+        .attr('y', 4)
+        .attr('text-anchor', 'start')
+        .attr('font-size', '14px')
+        .attr('fill', 'black');
+    
+    // second rectangle: tempColumn2
+    chartG.append('rect')
+        .attr('x', 190)
+        .attr('y', -10)
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('fill', '#fb8500');
+
+    chartG.append('text')
+        .text(tempColumn2)
+        .attr('x', 220)
+        .attr('y', 4)
+        .attr('text-anchor', 'start')
+        .attr('font-size', '14px')
+        .attr('fill', 'black');
+    
+    // third rectangle: precColumn1
+    chartG.append('rect')
+        .attr('x', 380)
+        .attr('y', -10)
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('fill', '#8ecae6');
+
+    chartG.append('text')
+        .text(precColumn1)
+        .attr('x', 410)
+        .attr('y', 4)
+        .attr('text-anchor', 'start')
+        .attr('font-size', '14px')
+        .attr('fill', 'black');
+
+    // fourth rectangle: precColumn2
+    chartG.append('rect')
+        .attr('x', 570)
+        .attr('y', -10)
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('fill', '#219ebc');
+
+    chartG.append('text')
+        .text(precColumn2)
+        .attr('x', 600)
+        .attr('y', 4)
+        .attr('text-anchor', 'start')
+        .attr('font-size', '14px')
+        .attr('fill', 'black');
 
     // Create top y-axis
     let yAxisTop = d3.axisLeft(yScaleTop);
 
     let yAxisTopG = chartG.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(30, -30)")
+        .attr("transform", "translate(30, 55)")
         .call(yAxisTop);
 
     yAxisTopG.select(".domain").remove(); // Remove the y-axis line if not needed
 
     yAxisTopG.selectAll(".tick line")
         .attr("stroke", "black")  // Set the color of the tick lines
-        .attr("stroke-width", "1px");  // Set the width of the tick lines
+        .attr("stroke-width", "2px");  // Set the width of the tick lines
 
     yAxisTopG.selectAll(".tick text")
         .attr("font-size", "12px");  // Set the font size of the tick labels      
@@ -185,7 +232,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("x1", 0)  // Start x-coordinate at 0 (left side)
         .attr("y1", 0)  // Start y-coordinate at 0 (top)
         .attr("x2", 0)  // End x-coordinate at 0 (left side)
-        .attr("y2", chartHeight / 2)  // End y-coordinate at chartHeight (bottom)
+        .attr("y2", 220)  // End y-coordinate at chartHeight (bottom)
         .attr("stroke", "black")  // Set the color of the line
         .attr("stroke-width", "2px");  // Set the width of the line
 
@@ -201,7 +248,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
 
     yAxisBottomG.selectAll(".tick line")
         .attr("stroke", "black")  // Set the color of the tick lines
-        .attr("stroke-width", "1px");  // Set the width of the tick lines
+        .attr("stroke-width", "2px");  // Set the width of the tick lines
 
     yAxisBottomG.selectAll(".tick text")
         .attr("font-size", "12px");  // Set the font size of the tick labels      
@@ -211,7 +258,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("x1", 0)  // Start x-coordinate at 0 (left side)
         .attr("y1", 0)  // Start y-coordinate at 0 (top)
         .attr("x2", 0)  // End x-coordinate at 0 (left side)
-        .attr("y2", chartHeight / 2)  // End y-coordinate at chartHeight (bottom)
+        .attr("y2", 250)  // End y-coordinate at chartHeight (bottom)
         .attr("stroke", "black")  // Set the color of the line
         .attr("stroke-width", "2px");  // Set the width of the line
 
@@ -256,12 +303,12 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         // add data label for precColumn1 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn1] * 100) / 100)
-            .attr('x', 50 + (rectWidth + 50)*i + 25)
+            .attr('x', 50 + (rectWidth + 50) * i + 25)
             .attr('y', 325 + filteredData[i][precColumn1] * 50 + 10)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
             .attr('fill', 'black');
-        // append another rectangle for tempColumn2
+        // append another rectangle for precColumn2
         chartG.append('rect')
             .attr('x', 100 + (rectWidth + 50)*i)
             .attr('y', 325)
@@ -271,7 +318,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         // add data label for precColumn2 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn2] * 100) / 100)
-            .attr('x', 100 + (rectWidth + 50)*i + 25)
+            .attr('x', 100 + (rectWidth + 50) * i + 25)
             .attr('y', 325 + filteredData[i][precColumn2] * 50 + 10)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')

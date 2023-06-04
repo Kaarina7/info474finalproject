@@ -27,6 +27,13 @@
             </select>
         </div>
         <div class="dropdown">
+          <label for="yearSelect">Year</label><br>
+          <select class="custom-select" id="yearSelect" onchange="onYearChanged()">
+            <option selected value="2014">2014</option>
+            <option value="2015">2015</option>
+          </select>
+        </div>
+        <div class="dropdown">
             <label for="col1Select">Temperature Column 1</label><br>
             <select class="custom-select" id="col1Select" onchange="onCol1Changed()">
               <option selected value="actual_mean_temp">Actual Mean Temp</option>
@@ -66,16 +73,9 @@
             <option value="record_precipitation">Record Precipitation</option>
           </select>
         </div>
-        <div class="dropdown">
-          <label for="yearSelect">Year</label><br>
-          <select class="custom-select" id="yearSelect" onchange="onYearChanged()">
-            <option selected value="2014">2014</option>
-            <option value="2015">2015</option>
-          </select>
-        </div>
       </div>
       <p></p>
-      <svg width="800" height="700" style="border: 2px solid black;">
+      <svg width="800" height="675" style="border: 2px solid black;">
         <line x1="70" y1="335" x2="775" y2="335" style="stroke: black; fill: none; stroke-width: 2px;"/>
         <line x1="70" y1="385" x2="775" y2="385" style="stroke: black; fill: none; stroke-width: 2px;"/>
       </svg>
