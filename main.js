@@ -2,8 +2,6 @@
 COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
 
 THINGS TO DO:
-- standardize font & size
-- add labels to y-axes
 - add comments to code & clean up
 */
 
@@ -143,7 +141,8 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('transform', 'translate('+[270, 30]+')')
         .append('text')
         .text('Weather for ' + selected_city + ', ' + state + ' (' + selected_year + ')')
-        .style('font-size', '20px');
+        .style('font-size', '20px')
+        .style('font-family', 'Arial, sans-serif');
 
     // add key/legend
     // first rectangle: tempColumn1
@@ -160,6 +159,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('y', 4)
         .attr('text-anchor', 'start')
         .attr('font-size', '14px')
+        .attr('font-family', 'Arial, sans-serif')
         .attr('fill', 'black');
     
     // second rectangle: tempColumn2
@@ -176,6 +176,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('y', 4)
         .attr('text-anchor', 'start')
         .attr('font-size', '14px')
+        .attr('font-family', 'Arial, sans-serif')
         .attr('fill', 'black');
     
     // third rectangle: precColumn1
@@ -192,6 +193,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('y', 4)
         .attr('text-anchor', 'start')
         .attr('font-size', '14px')
+        .attr('font-family', 'Arial, sans-serif')
         .attr('fill', 'black');
 
     // fourth rectangle: precColumn2
@@ -208,6 +210,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('y', 4)
         .attr('text-anchor', 'start')
         .attr('font-size', '14px')
+        .attr('font-family', 'Arial, sans-serif')
         .attr('fill', 'black');
 
     // Create top y-axis
@@ -235,6 +238,15 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("y2", 220)  // End y-coordinate at chartHeight (bottom)
         .attr("stroke", "black")  // Set the color of the line
         .attr("stroke-width", "2px");  // Set the width of the line
+    
+    // add y-axis label for top y-axis
+    chartG.append("text")
+        .attr("class", "y-axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -225)
+        .attr("y", -10)
+        .style("text-anchor", "start")
+        .text("Temperature (\u00B0F)");
 
     // Create bottom y-axis
     let yAxisBottom = d3.axisLeft(yScaleBottom);
@@ -261,6 +273,15 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("y2", 250)  // End y-coordinate at chartHeight (bottom)
         .attr("stroke", "black")  // Set the color of the line
         .attr("stroke-width", "2px");  // Set the width of the line
+    
+    // add y-axis label for top y-axis
+    chartG.append("text")
+        .attr("class", "y-axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -500)
+        .attr("y", -10)
+        .style("text-anchor", "start")
+        .text("Precipitation (in)");
 
     for (i = 0; i < filteredData.length; i++) {
         // append one rectangle for tempColumn1
@@ -277,6 +298,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('y', 275 - (filteredData[i][tempColumn1] * 2) - 5)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
+            .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
         // append another rectangle for tempColumn2
         chartG.append('rect')
@@ -292,6 +314,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('y', 275 - (filteredData[i][tempColumn2] * 2) - 5)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
+            .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
         // append a rectangle for precColumn1
         chartG.append('rect')
@@ -307,6 +330,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('y', 325 + filteredData[i][precColumn1] * 50 + 10)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
+            .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
         // append another rectangle for precColumn2
         chartG.append('rect')
@@ -322,6 +346,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('y', 325 + filteredData[i][precColumn2] * 50 + 10)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
+            .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
         // add month labels
         chartG.append('text')
@@ -330,6 +355,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('y', 300)
             .attr('text-anchor', 'middle')
             .attr('font-size', '16px')
+            .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
     }
 };
