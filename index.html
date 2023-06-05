@@ -14,6 +14,8 @@
         <h2 class="text">Filters & Options</h2>
       </div>
       <div class="dropdown-container">
+
+        <!-- dropdown for city -->
         <div class="dropdown">
             <label for="citySelect" class="text">City</label><br>
             <select class="custom-select" id="citySelect" onchange="onCityChanged()">
@@ -26,6 +28,8 @@
               <option value="Phoenix">Phoenix, AZ</option>
             </select>
         </div>
+
+        <!-- dropdown for year -->
         <div class="dropdown">
           <label for="yearSelect" class="text">Year</label><br>
           <select class="custom-select" id="yearSelect" onchange="onYearChanged()">
@@ -33,6 +37,18 @@
             <option value="2015">2015</option>
           </select>
         </div>
+
+      </div>
+
+      <div>
+        <p></p>
+      </div>
+
+      <div class="dropdown-container">
+
+
+        <!-- dropdown for first temp column -->
+        <div class="tempcol1square"></div>
         <div class="dropdown">
             <label for="col1Select" class="text">Temperature Column 1</label><br>
             <select class="custom-select" id="col1Select" onchange="onCol1Changed()">
@@ -45,6 +61,9 @@
               <option value="record_max_temp">Record Max Temp</option>
             </select>
         </div>
+
+        <!-- dropdown for second temp column -->
+        <div class="tempcol2square"></div>
         <div class="dropdown">
             <label for="col1Select" class="text">Temperature Column 2</label><br>
             <select class="custom-select" id="col2Select" onchange="onCol2Changed()">
@@ -57,6 +76,9 @@
               <option value="record_max_temp">Record Max Temp</option>
             </select>
         </div>
+
+        <!-- dropdown for first precipitation column -->
+        <div class="preccol1square"></div>
         <div class="dropdown">
           <label for="prec1Select" class="text">Precipitation Column 1</label><br>
           <select class="custom-select" id="prec1Select" onchange="onPrec1Changed()">
@@ -65,6 +87,9 @@
             <option value="record_precipitation">Record Precipitation</option>
           </select>
         </div>
+
+        <!-- dropdown for second precipitation column -->
+        <div class="preccol2square"></div>
         <div class="dropdown">
           <label for="prec2Select" class="text">Precipitation Column 2</label><br>
           <select class="custom-select" id="prec2Select" onchange="onPrec2Changed()">
@@ -73,25 +98,26 @@
             <option value="record_precipitation">Record Precipitation</option>
           </select>
         </div>
+
       </div>
       <p></p>
-      <svg width="800" height="675" style="border: 2px solid black;">
+      <svg width="800" height="750" style="border: 2px solid black;">
         <line x1="70" y1="335" x2="775" y2="335" style="stroke: black; fill: none; stroke-width: 2px;"/>
-        <line x1="70" y1="385" x2="775" y2="385" style="stroke: black; fill: none; stroke-width: 2px;"/>
+        <line x1="70" y1="470" x2="775" y2="470" style="stroke: black; fill: none; stroke-width: 2px;"/>
       </svg>
       <div>
         <h2 class="text">Dataset Columns</h2>
         <ul>
-          <li class="text">actual_mean_temp : The measured average temperature for that month</li>
-          <li class="text">actual_min_temp : The measured minimum temperature for that month</li>
-          <li class="text">actual_max_temp : The measured maximum temperature for that month</li>
-          <li class="text">average_min_temp : The average minimum temperature for that month since 1880</li>
-          <li class="text">average_max_temp : The average maximum temperature for that month since 1880</li>
-          <li class="text">record_min_temp : The average of the lowest ever temperature for the days in that month since 1880</li>
-          <li class="text">record_max_temp : The average of the highest ever temperature for the days in that month since 1880</li>
-          <li class="text">actual_precipitation : The average measured amount of rain or snow for that month</li>
-          <li class="text">average_precipitation : The average amount of rain or snow for that month since 1880</li>
-          <li class="text">record_precipitation : The average of the highest amount of rain or snow for the days in that month since 1880</li>
+          <li class="text">actual_mean_temp : The average of the daily measured temperatures for that month</li>
+          <li class="text">actual_min_temp : The average of the daily measured minimum temperatures for that month</li>
+          <li class="text">actual_max_temp : The average of the daily measured maximum temperature for that month</li>
+          <li class="text">average_min_temp : The average of the minimum temperature since 1880 for each day in that month</li>
+          <li class="text">average_max_temp : The average of the maximum temperature since 1880 for each day in that month</li>
+          <li class="text">record_min_temp : The lowest ever temperature in that month since 1880</li>
+          <li class="text">record_max_temp : The highest ever temperature in that month since 1880</li>
+          <li class="text">actual_precipitation : The sum of the measured amount of rain or snow for that month</li>
+          <li class="text">average_precipitation : The sum of the average amount of rain or snow for that month since 1880</li>
+          <li class="text">record_precipitation : The highest amount of rain or snow a day for that month since 1880</li>
         </ul>
       </div>
     </div>

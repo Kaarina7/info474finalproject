@@ -199,16 +199,17 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     /* SET UP THE TWO Y-AXES */
     // set up y scale for top bars
     yScaleTop = d3.scaleLinear()
-        .domain([110, 0])
-        .range([0, 220]);
+        .domain([120, -30])
+        .range([0, 300]);
 
     // set up y scale for bottom bars
     yScaleBottom = d3.scaleLinear()
-        .domain([0, 5])
+        .domain([0, 10])
         .range([0, 250]);
 
     // Create top y-axis
-    let yAxisTop = d3.axisLeft(yScaleTop);
+    let yAxisTop = d3.axisLeft(yScaleTop)
+        .ticks(16);
 
     let yAxisTopG = chartG.append("g")
         .attr("class", "y-axis")
@@ -218,20 +219,20 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     yAxisTopG.select(".domain").remove(); // Remove the y-axis line if not needed
 
     yAxisTopG.selectAll(".tick line")
-        .attr("stroke", "black")  // Set the color of the tick lines
-        .attr("stroke-width", "2px");  // Set the width of the tick lines
+        .attr("stroke", "black")
+        .attr("stroke-width", "2px");
 
     yAxisTopG.selectAll(".tick text")
-        .attr("font-size", "12px");  // Set the font size of the tick labels      
+        .attr("font-size", "12px");    
     
     yAxisTopG.append("line")
         .attr("class", "y-axis-line")
-        .attr("x1", 0)  // Start x-coordinate at 0 (left side)
-        .attr("y1", 0)  // Start y-coordinate at 0 (top)
-        .attr("x2", 0)  // End x-coordinate at 0 (left side)
-        .attr("y2", 220)  // End y-coordinate at chartHeight (bottom)
-        .attr("stroke", "black")  // Set the color of the line
-        .attr("stroke-width", "2px");  // Set the width of the line
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 0)
+        .attr("y2", 301)
+        .attr("stroke", "black")
+        .attr("stroke-width", "2px");
     
     // add y-axis label for top y-axis
     chartG.append("text")
@@ -248,7 +249,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
 
     let yAxisBottomG = chartG.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(30, 325)")
+        .attr("transform", "translate(30, 410)")
         .call(yAxisBottom);
 
     yAxisBottomG.select(".domain").remove(); // Remove the y-axis line if not needed
@@ -273,7 +274,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     chartG.append("text")
         .attr("class", "y-axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("x", -500)
+        .attr("x", -525)
         .attr("y", -10)
         .style("text-anchor", "start")
         .style('font-family', 'Arial, sans-serif')
@@ -285,59 +286,99 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     for (i = 0; i < filteredData.length; i++) {
         /* CREATE BARS */
         // append a rectangle for tempColumn1
-        chartG.append('rect')
-            .attr('x', 50 + (rectWidth + 50)*i)
-            .attr('y', 275 - (filteredData[i][tempColumn1] * 2))
-            .attr('width', 50)
-            .attr('height', filteredData[i][tempColumn1] * 2)
-            .attr('fill', '#ffb703');
+        if (filteredData[i][tempColumn1] < 0) {
+            chartG.append('rect')
+                .attr('x', 50 + (rectWidth + 50) * i)
+                .attr('y', 275)
+                .attr('width', 50)
+                .attr('height', -filteredData[i][tempColumn1] * 2)
+                .attr('fill', '#ffb703');
+        } else {
+            chartG.append('rect')
+                .attr('x', 50 + (rectWidth + 50) * i)
+                .attr('y', 275 - (filteredData[i][tempColumn1] * 2))
+                .attr('width', 50)
+                .attr('height', filteredData[i][tempColumn1] * 2)
+                .attr('fill', '#ffb703');
+        }
         // append a rectangle for tempColumn2
-        chartG.append('rect')
-            .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 275 - (filteredData[i][tempColumn2] * 2))
-            .attr('width', 50)
-            .attr('height', filteredData[i][tempColumn2] * 2)
-            .attr('fill', '#fb8500');
+        if (filteredData[i][tempColumn2] < 0) {
+            chartG.append('rect')
+                .attr('x', 100 + (rectWidth + 50) * i)
+                .attr('y', 275)
+                .attr('width', 50)
+                .attr('height', -filteredData[i][tempColumn2] * 2)
+                .attr('fill', '#fb8500');         
+        } else {
+            chartG.append('rect')
+                .attr('x', 100 + (rectWidth + 50) * i)
+                .attr('y', 275 - (filteredData[i][tempColumn2] * 2))
+                .attr('width', 50)
+                .attr('height', filteredData[i][tempColumn2] * 2)
+                .attr('fill', '#fb8500');
+        }
         // append a rectangle for precColumn1
         chartG.append('rect')
-            .attr('x', 50 + (rectWidth + 50)*i)
-            .attr('y', 325)
+            .attr('x', 50 + (rectWidth + 50) * i)
+            .attr('y', 410)
             .attr('width', 50)
-            .attr('height', filteredData[i][precColumn1] * 50)
+            .attr('height', filteredData[i][precColumn1] * 25)
             .attr('fill', '#8ecae6');
         // append another rectangle for precColumn2
         chartG.append('rect')
-            .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 325)
+            .attr('x', 100 + (rectWidth + 50) * i)
+            .attr('y', 410)
             .attr('width', 50)
-            .attr('height', filteredData[i][precColumn2] * 50)
+            .attr('height', filteredData[i][precColumn2] * 25)
             .attr('fill', '#219ebc');
         /* END BAR CREATION */
 
         /* ADD DATA LABELS */
         // add data label for tempColumn1 rectangle
-        chartG.append('text')
-            .text(Math.round(filteredData[i][tempColumn1] * 100) / 100)
-            .attr('x', 50 + (rectWidth + 50)*i + 25)
-            .attr('y', 275 - (filteredData[i][tempColumn1] * 2) - 5)
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '12px')
-            .attr('font-family', 'Arial, sans-serif')
-            .attr('fill', 'black');
+        if (filteredData[i][tempColumn1] < 0) {
+            chartG.append('text')
+                .text(Math.round(filteredData[i][tempColumn1] * 100) / 100)
+                .attr('x', 50 + (rectWidth + 50)*i + 25)
+                .attr('y', 295 - (filteredData[i][tempColumn1] * 2) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('font-family', 'Arial, sans-serif')
+                .attr('fill', 'black');
+        } else {
+            chartG.append('text')
+                .text(Math.round(filteredData[i][tempColumn1] * 100) / 100)
+                .attr('x', 50 + (rectWidth + 50)*i + 25)
+                .attr('y', 275 - (filteredData[i][tempColumn1] * 2) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('font-family', 'Arial, sans-serif')
+                .attr('fill', 'black');
+        }
         // add data label for tempColumn2 rectangle
-        chartG.append('text')
-            .text(Math.round(filteredData[i][tempColumn2] * 100) / 100)
-            .attr('x', 100 + (rectWidth + 50)*i + 25)
-            .attr('y', 275 - (filteredData[i][tempColumn2] * 2) - 5)
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '12px')
-            .attr('font-family', 'Arial, sans-serif')
-            .attr('fill', 'black');
+        if (filteredData[i][tempColumn2] < 0) {
+            chartG.append('text')
+                .text(Math.round(filteredData[i][tempColumn2] * 100) / 100)
+                .attr('x', 100 + (rectWidth + 50)*i + 25)
+                .attr('y', 295 - (filteredData[i][tempColumn2] * 2) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('font-family', 'Arial, sans-serif')
+                .attr('fill', 'black');      
+        } else {
+            chartG.append('text')
+                .text(Math.round(filteredData[i][tempColumn2] * 100) / 100)
+                .attr('x', 100 + (rectWidth + 50)*i + 25)
+                .attr('y', 275 - (filteredData[i][tempColumn2] * 2) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('font-family', 'Arial, sans-serif')
+                .attr('fill', 'black');
+        }
         // add data label for precColumn1 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn1] * 100) / 100)
             .attr('x', 50 + (rectWidth + 50) * i + 25)
-            .attr('y', 325 + filteredData[i][precColumn1] * 50 + 10)
+            .attr('y', 410 + filteredData[i][precColumn1] * 25 + 15)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
             .attr('font-family', 'Arial, sans-serif')
@@ -346,7 +387,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn2] * 100) / 100)
             .attr('x', 100 + (rectWidth + 50) * i + 25)
-            .attr('y', 325 + filteredData[i][precColumn2] * 50 + 10)
+            .attr('y', 410 + filteredData[i][precColumn2] * 25 + 15)
             .attr('text-anchor', 'middle')
             .attr('font-size', '12px')
             .attr('font-family', 'Arial, sans-serif')
@@ -355,7 +396,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         chartG.append('text')
             .text(filteredData[i].month_name)
             .attr('x', 75 + (rectWidth + 50) * i + 25)
-            .attr('y', 300)
+            .attr('y', 370)
             .attr('text-anchor', 'middle')
             .attr('font-size', '16px')
             .attr('font-family', 'Arial, sans-serif')

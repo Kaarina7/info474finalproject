@@ -2,12 +2,44 @@
     display: flex;
     flex-wrap: wrap;
   }
-  
+
+.dropdown-container2 {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .dropdown {
     margin-right: 20px;
 }
 
 .text {
   font-family: Arial, Helvetica, sans-serif;
+}
 
+.tempcol1square {
+  width: 15px;
+  height: 15px;
+  background-color: #ffb703;
+  margin: 10px; /* Adjust the margin as needed */
+}
+
+.tempcol2square {
+  width: 15px;
+  height: 15px;
+  background-color: #fb8500;
+  margin: 10px; /* Adjust the margin as needed */
+}
+
+.preccol1square {
+  width: 15px;
+  height: 15px;
+  background-color: #8ecae6;
+  margin: 10px; /* Adjust the margin as needed */
+}
+
+.preccol2square {
+  width: 15px;
+  height: 15px;
+  background-color: #219ebc;
+  margin: 10px; /* Adjust the margin as needed */
 }
