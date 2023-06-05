@@ -213,7 +213,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
 
     let yAxisTopG = chartG.append("g")
         .attr("class", "y-axis")
-        .attr("transform", "translate(30, 55)")
+        .attr("transform", "translate(30, 35)")
         .call(yAxisTop);
 
     yAxisTopG.select(".domain").remove(); // Remove the y-axis line if not needed
@@ -274,7 +274,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
     chartG.append("text")
         .attr("class", "y-axis-label")
         .attr("transform", "rotate(-90)")
-        .attr("x", -525)
+        .attr("x", -590)
         .attr("y", -10)
         .style("text-anchor", "start")
         .style('font-family', 'Arial, sans-serif')
@@ -396,7 +396,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         chartG.append('text')
             .text(filteredData[i].month_name)
             .attr('x', 75 + (rectWidth + 50) * i + 25)
-            .attr('y', 370)
+            .attr('y', 380)
             .attr('text-anchor', 'middle')
             .attr('font-size', '16px')
             .attr('font-family', 'Arial, sans-serif')
