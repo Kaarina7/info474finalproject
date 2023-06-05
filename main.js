@@ -2,7 +2,7 @@
 COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
 
 THINGS TO DO:
-- add comments to code & clean up
+- make the y-axes dynamic
 */
 
 // initialize global variables
@@ -16,15 +16,14 @@ let precCol1 = 'actual_precipitation';
 let precCol2 = 'average_precipitation';
 let year = "2014";
 
-// Global function called when selected location is changed
+// update chart when city is changed
 function onCityChanged() {
     let catSelect = d3.select('#citySelect').node();
-
     city = catSelect.options[catSelect.selectedIndex].value;
-
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// update chart when first temp column is changed
 function onCol1Changed() {
     let catSelect = d3.select('#col1Select').node();
 
@@ -33,41 +32,37 @@ function onCol1Changed() {
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// update chart when second temp column is changed
 function onCol2Changed() {
     let catSelect = d3.select('#col2Select').node();
-
     tempCol2 = catSelect.options[catSelect.selectedIndex].value;
-
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// update chart when first precipitation column is changed
 function onPrec1Changed() {
     let catSelect = d3.select('#prec1Select').node();
-
     precCol1 = catSelect.options[catSelect.selectedIndex].value;
-
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// update chart when second precipitation column is changed
 function onPrec2Changed() {
     let catSelect = d3.select('#prec2Select').node();
-
     precCol2 = catSelect.options[catSelect.selectedIndex].value;
-
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// update chart when year is changed
 function onYearChanged() {
     let catSelect = d3.select('#yearSelect').node();
-
     year = catSelect.options[catSelect.selectedIndex].value;
-
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 }
 
+// set up SVG/chart parameters
 let svg = d3.select('svg');
 
-// Get layout parameters
 let svgWidth = +svg.attr('width');
 let svgHeight = +svg.attr('height');
 
@@ -76,37 +71,23 @@ let padding = {t: 60, r: 40, b: 30, l: 40};
 let chartWidth = svgWidth - padding.l - padding.r;
 let chartHeight = svgHeight - padding.t - padding.b;
 
-let barBand = chartWidth / 26;
-let barWidth = barBand * 0.7;
-
-// Create a group element for appending chart elements
-let chartG = svg.append('g')
-    .attr('transform', 'translate('+[padding.l, padding.t]+')');
+let chartG = svg.append('g').attr('transform', 'translate('+[padding.l, padding.t]+')'); // Create group element for appending chart elements
 
 d3.csv('./DataProcessing/final.csv').then(function(dataset) {
 
     // initialize weather
     weather = dataset;
 
-    // set up y scale for top bars
-    yScaleTop = d3.scaleLinear()
-        .domain([110, 0])
-        .range([0, 220]);
-
-    // set up y scale for bottom bars
-    yScaleBottom = d3.scaleLinear()
-        .domain([0, 5])
-        .range([0, 250]);
-
     // call updateChart function
     updateChart(city, tempCol1, tempCol2, precCol1, precCol2, year);
 });
 
 function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precColumn2, selected_year) {
-    // Create a filtered array of letters based on the filterKey
+    // filter the data based on the selected city & year
     let filteredData = weather.filter(item => item.city === selected_city);
     filteredData = filteredData.filter(item => item.year === selected_year);
 
+    // calculate the width of the bars based on the total number of data points
     let rectWidth = (680 - (filteredData.length * 50)) / filteredData.length;
 
     // remove all rectangles in order to regenerate them
@@ -144,7 +125,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .style('font-size', '20px')
         .style('font-family', 'Arial, sans-serif');
 
-    // add key/legend
+    /* SET UP THE LEGEND AT THE TOP OF THE GRAPH */
     // first rectangle: tempColumn1
     chartG.append('rect')
         .attr('x', 10)
@@ -212,6 +193,19 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('font-size', '14px')
         .attr('font-family', 'Arial, sans-serif')
         .attr('fill', 'black');
+    
+    /* END SETUP OF LEGEND */
+
+    /* SET UP THE TWO Y-AXES */
+    // set up y scale for top bars
+    yScaleTop = d3.scaleLinear()
+        .domain([110, 0])
+        .range([0, 220]);
+
+    // set up y scale for bottom bars
+    yScaleBottom = d3.scaleLinear()
+        .domain([0, 5])
+        .range([0, 250]);
 
     // Create top y-axis
     let yAxisTop = d3.axisLeft(yScaleTop);
@@ -246,6 +240,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("x", -225)
         .attr("y", -10)
         .style("text-anchor", "start")
+        .style('font-family', 'Arial, sans-serif')
         .text("Temperature (\u00B0F)");
 
     // Create bottom y-axis
@@ -274,23 +269,52 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr("stroke", "black")  // Set the color of the line
         .attr("stroke-width", "2px");  // Set the width of the line
     
-    // add y-axis label for top y-axis
+    // add y-axis label for bottom y-axis
     chartG.append("text")
         .attr("class", "y-axis-label")
         .attr("transform", "rotate(-90)")
         .attr("x", -500)
         .attr("y", -10)
         .style("text-anchor", "start")
+        .style('font-family', 'Arial, sans-serif')
         .text("Precipitation (in)");
+    
+    /* END SETUP OF Y-AXES */
 
+    /* CREATE BARS & LABELS FOR DATA */
     for (i = 0; i < filteredData.length; i++) {
-        // append one rectangle for tempColumn1
+        /* CREATE BARS */
+        // append a rectangle for tempColumn1
         chartG.append('rect')
             .attr('x', 50 + (rectWidth + 50)*i)
             .attr('y', 275 - (filteredData[i][tempColumn1] * 2))
             .attr('width', 50)
             .attr('height', filteredData[i][tempColumn1] * 2)
             .attr('fill', '#ffb703');
+        // append a rectangle for tempColumn2
+        chartG.append('rect')
+            .attr('x', 100 + (rectWidth + 50)*i)
+            .attr('y', 275 - (filteredData[i][tempColumn2] * 2))
+            .attr('width', 50)
+            .attr('height', filteredData[i][tempColumn2] * 2)
+            .attr('fill', '#fb8500');
+        // append a rectangle for precColumn1
+        chartG.append('rect')
+            .attr('x', 50 + (rectWidth + 50)*i)
+            .attr('y', 325)
+            .attr('width', 50)
+            .attr('height', filteredData[i][precColumn1] * 50)
+            .attr('fill', '#8ecae6');
+        // append another rectangle for precColumn2
+        chartG.append('rect')
+            .attr('x', 100 + (rectWidth + 50)*i)
+            .attr('y', 325)
+            .attr('width', 50)
+            .attr('height', filteredData[i][precColumn2] * 50)
+            .attr('fill', '#219ebc');
+        /* END BAR CREATION */
+
+        /* ADD DATA LABELS */
         // add data label for tempColumn1 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][tempColumn1] * 100) / 100)
@@ -300,13 +324,6 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('font-size', '12px')
             .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
-        // append another rectangle for tempColumn2
-        chartG.append('rect')
-            .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 275 - (filteredData[i][tempColumn2] * 2))
-            .attr('width', 50)
-            .attr('height', filteredData[i][tempColumn2] * 2)
-            .attr('fill', '#fb8500');
         // add data label for tempColumn2 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][tempColumn2] * 100) / 100)
@@ -316,13 +333,6 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('font-size', '12px')
             .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
-        // append a rectangle for precColumn1
-        chartG.append('rect')
-            .attr('x', 50 + (rectWidth + 50)*i)
-            .attr('y', 325)
-            .attr('width', 50)
-            .attr('height', filteredData[i][precColumn1] * 50)
-            .attr('fill', '#8ecae6');
         // add data label for precColumn1 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn1] * 100) / 100)
@@ -332,13 +342,6 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('font-size', '12px')
             .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
-        // append another rectangle for precColumn2
-        chartG.append('rect')
-            .attr('x', 100 + (rectWidth + 50)*i)
-            .attr('y', 325)
-            .attr('width', 50)
-            .attr('height', filteredData[i][precColumn2] * 50)
-            .attr('fill', '#219ebc');
         // add data label for precColumn2 rectangle
         chartG.append('text')
             .text(Math.round(filteredData[i][precColumn2] * 100) / 100)
@@ -357,5 +360,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
             .attr('font-size', '16px')
             .attr('font-family', 'Arial, sans-serif')
             .attr('fill', 'black');
+        /* END ADDITION OF DATA LABELS */
     }
+    /* END CREATION OF BARS & LABELS FOR DATA */
 };
