@@ -1,8 +1,5 @@
 /*
 COMMAND TO START LOCAL PYTHON SERVER: python -m http.server 8080
-
-THINGS TO DO:
-- make the y-axes dynamic
 */
 
 // initialize global variables
@@ -15,6 +12,12 @@ let tempCol2 = 'actual_min_temp';
 let precCol1 = 'actual_precipitation';
 let precCol2 = 'average_precipitation';
 let year = "2014";
+
+function replaceUnderscores(str) {
+    let replaced = str.replace(/_/g, ' ');
+    let capitalized = replaced.replace(/\b\w/g, match => match.toUpperCase());
+    return capitalized;
+  }
 
 // update chart when city is changed
 function onCityChanged() {
@@ -133,9 +136,9 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('width', 20)
         .attr('height', 20)
         .attr('fill', '#ffb703');
-    
+
     chartG.append('text')
-        .text(tempColumn1)
+        .text(replaceUnderscores(tempColumn1))
         .attr('x', 40)
         .attr('y', 4)
         .attr('text-anchor', 'start')
@@ -152,7 +155,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('fill', '#fb8500');
 
     chartG.append('text')
-        .text(tempColumn2)
+        .text(replaceUnderscores(tempColumn2))
         .attr('x', 220)
         .attr('y', 4)
         .attr('text-anchor', 'start')
@@ -169,7 +172,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('fill', '#8ecae6');
 
     chartG.append('text')
-        .text(precColumn1)
+        .text(replaceUnderscores(precColumn1))
         .attr('x', 410)
         .attr('y', 4)
         .attr('text-anchor', 'start')
@@ -186,7 +189,7 @@ function updateChart(selected_city, tempColumn1, tempColumn2, precColumn1, precC
         .attr('fill', '#219ebc');
 
     chartG.append('text')
-        .text(precColumn2)
+        .text(replaceUnderscores(precColumn2))
         .attr('x', 600)
         .attr('y', 4)
         .attr('text-anchor', 'start')
